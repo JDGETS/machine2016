@@ -1,3 +1,6 @@
+#include <Servo.h>
+
+
 #define DEBUG
 
 #ifdef DEBUG
@@ -7,6 +10,10 @@
 
 #include "PS2X_lib.h"
 #include <TaskScheduler.h>
+
+/*Define des servo*/
+#define servo_pin_SF 13
+/******************/
 
 #define PS2_DAT        6
 #define PS2_CMD        7
@@ -18,6 +25,9 @@
 PS2X ps2x;
 Scheduler scheduler;
 
+Servo servo_test;
+bool flip_done = false;
+
 Task taskReadGamepad(30, -1, &handleReadGamepad);
 void handleReadGamepad() {
   ps2x.read_gamepad();
@@ -25,6 +35,37 @@ void handleReadGamepad() {
   if(ps2x.ButtonPressed(PSB_SQUARE)) {
     Serial.println("Square just pressed");
   }
+  
+  
+  /*if(flip_done == false &&  ps2x.ButtonPressed(PSB_SQUARE)){
+     servo_test.write(0);
+     flip_done = true;
+     Serial.println(flip_done,DEC);
+     delay(300);
+  } else if(flip_done){
+     servo_test.write(0);  
+     Serial.println(flip_done,DEC);
+  } else {
+    servo_test.write(180);
+  }
+ 
+  if(flip_done == true &&  ps2x.ButtonPressed(PSB_SQUARE)){
+    servo_test.write(180);
+    flip_done = false;
+  }*/
+
+  if(ps2x.ButtonPressed(PSB_SQUARE)){
+    flip_done = !flip_done; 
+    //delay(500);
+  }
+
+  if(flip_done == false){
+    servo_test.write(0);
+  }else{
+    servo_test.write(180);
+  }
+
+  
 }
 
 void setup() {
@@ -41,8 +82,13 @@ void setup() {
 
   ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT,
                       PS2_PRESSURES, PS2_RUMBLE);
+
+  /*Set-up d'un servo*/
+  servo_test.attach(servo_pin_SF);
+  
 }
 
 void loop() {
   scheduler.execute();
+  
 }
