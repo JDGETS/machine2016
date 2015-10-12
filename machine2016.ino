@@ -1,6 +1,3 @@
-#include <Servo.h>
-
-
 #define DEBUG
 
 #ifdef DEBUG
@@ -10,6 +7,7 @@
 
 #include "PS2X_lib.h"
 #include <TaskScheduler.h>
+#include <Servo.h>
 
 /*Define des servo*/
 #define servo_pin_SF 13
@@ -35,28 +33,9 @@ void handleReadGamepad() {
   if(ps2x.ButtonPressed(PSB_SQUARE)) {
     Serial.println("Square just pressed");
   }
-  
-  
-  /*if(flip_done == false &&  ps2x.ButtonPressed(PSB_SQUARE)){
-     servo_test.write(0);
-     flip_done = true;
-     Serial.println(flip_done,DEC);
-     delay(300);
-  } else if(flip_done){
-     servo_test.write(0);  
-     Serial.println(flip_done,DEC);
-  } else {
-    servo_test.write(180);
-  }
- 
-  if(flip_done == true &&  ps2x.ButtonPressed(PSB_SQUARE)){
-    servo_test.write(180);
-    flip_done = false;
-  }*/
 
   if(ps2x.ButtonPressed(PSB_SQUARE)){
-    flip_done = !flip_done; 
-    //delay(500);
+    flip_done = !flip_done;
   }
 
   if(flip_done == false){
@@ -65,7 +44,7 @@ void handleReadGamepad() {
     servo_test.write(180);
   }
 
-  
+
 }
 
 void setup() {
@@ -85,10 +64,9 @@ void setup() {
 
   /*Set-up d'un servo*/
   servo_test.attach(servo_pin_SF);
-  
+
 }
 
 void loop() {
   scheduler.execute();
-  
 }
