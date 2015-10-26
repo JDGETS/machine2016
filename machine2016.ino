@@ -6,6 +6,7 @@
 #endif
 
 #include "PS2X_lib.h"
+#include "motors.h"
 #include <TaskScheduler.h>
 #include <Servo.h>
 
@@ -22,6 +23,7 @@
 
 PS2X ps2x;
 Scheduler scheduler;
+Motors motors;
 
 Servo servo_test;
 bool flip_done = false;
@@ -31,20 +33,25 @@ void handleReadGamepad() {
   ps2x.read_gamepad();
 
   if(ps2x.ButtonPressed(PSB_SQUARE)) {
-    Serial.println("Square just pressed");
-  }
-
-  if(ps2x.ButtonPressed(PSB_SQUARE)){
     flip_done = !flip_done;
   }
 
-  if(flip_done == false){
+  if(flip_done == false) {
     servo_test.write(0);
-  }else{
+  } else {
     servo_test.write(180);
   }
 
+  byte speed = ps2x.Analog(PSS_LY);
+  byte angular = ps2x.Analog(PSS_RX);
 
+  motors.setSpeed(speed);
+}
+
+
+Task taskSopSpinorama(0, 1, &handleStopSpinorama);
+void handleStopSpinorama() {
+  // motors.setSpinorama(false);
 }
 
 void setup() {
