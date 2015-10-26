@@ -12,6 +12,8 @@ public:
 
   void setAngular(byte angular);
 
+  void setSpinning(bool enabled);
+
   void write();
 
 private:
@@ -19,6 +21,7 @@ private:
   Motor _right;
   byte _speed;
   byte _angular;
+  bool _spinning;
 };
 
 #endif

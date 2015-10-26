@@ -14,6 +14,9 @@
 #define servo_pin_SF 13
 /******************/
 
+// Controls
+#define SPINNING_BUTTON PSB_CROSS
+
 #define PS2_DAT        6
 #define PS2_CMD        7
 #define PS2_SEL        8
@@ -29,6 +32,8 @@ Servo servo_test;
 bool flip_done = false;
 
 Task taskReadGamepad(30, -1, &handleReadGamepad);
+Task taskStopSpinorama(300, 1, &handleStopSpinorama);
+
 void handleReadGamepad() {
   ps2x.read_gamepad();
 
@@ -42,16 +47,21 @@ void handleReadGamepad() {
     servo_test.write(180);
   }
 
+  if(ps2x.ButtonPressed(SPINNING_BUTTON)) {
+    motors.setSpinning(true);
+    taskStopSpinorama.enable();
+  }
+
   byte speed = ps2x.Analog(PSS_LY);
   byte angular = ps2x.Analog(PSS_RX);
 
   motors.setSpeed(speed);
+  motors.setAngular(angular);
 }
 
 
-Task taskSopSpinorama(0, 1, &handleStopSpinorama);
 void handleStopSpinorama() {
-  // motors.setSpinorama(false);
+  motors.setSpinning(false);
 }
 
 void setup() {
