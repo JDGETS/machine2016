@@ -54,17 +54,20 @@ void handleReadGamepad() {
     taskStopSpinning.enable();
   }
 
-  byte speed = 127;
+  char speed = 0;
   byte angular = ps2x.Analog(PSS_LX);
 
+  byte x = ps2x.Analog(PSS_LX);
+  byte y = ps2x.Analog(PSS_LY);
+
   if(ps2x.Button(MOVE_FORWARD)) {
-    speed = 255;
+    speed = 127;
   } else if(ps2x.Button(MOVE_BACKWARD)) {
-    speed = 0;
+    speed = -127;
   }
 
   motors.setSpeed(speed);
-  motors.setAngular(angular);
+  motors.setAngular(angular - 128);
 
   motors.write();
 }

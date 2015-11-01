@@ -3,11 +3,6 @@
 
 #include <arduino.h>
 
-#define MOTOR_L_FORWARD_PIN 4
-#define MOTOR_L_BACKWARD_PIN 5
-#define MOTOR_R_FORWARD_PIN 2
-#define MOTOR_R_BACKWARD_PIN 3
-
 // Motor class that controls a single motor with two PWM signals plugged on the
 // provided pins for forward and backward movements.
 class Motor
@@ -15,12 +10,13 @@ class Motor
 public:
   Motor(byte pin_forward, byte pin_backward);
 
-  void setSpeed(byte speed);
+  void setSpeed(char speed);
+  const char &speed() const;
 
   void write();
 
 private:
-  byte _speed;
+  char _speed;
   byte _pin_forward;
   byte _pin_backward;
 };
