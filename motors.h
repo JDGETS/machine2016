@@ -13,6 +13,7 @@ public:
   void setAngular(byte angular);
 
   void setSpinning(bool enabled);
+  const bool &spinning() const;
 
   void write();
 

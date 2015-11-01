@@ -16,6 +16,8 @@
 
 // Controls
 #define SPINNING_BUTTON PSB_CROSS
+#define MOVE_FORWARD PSB_R2
+#define MOVE_BACKWARD PSB_R1
 
 #define PS2_DAT        6
 #define PS2_CMD        7
@@ -32,7 +34,7 @@ Servo servo_test;
 bool flip_done = false;
 
 Task taskReadGamepad(30, -1, &handleReadGamepad);
-Task taskStopSpinorama(300, 1, &handleStopSpinorama);
+Task taskStopSpinning(300, 1, &handleStopSpinning);
 
 void handleReadGamepad() {
   ps2x.read_gamepad();
@@ -47,20 +49,27 @@ void handleReadGamepad() {
     servo_test.write(180);
   }
 
-  if(ps2x.ButtonPressed(SPINNING_BUTTON)) {
+  if(ps2x.ButtonPressed(SPINNING_BUTTON) && !motors.spinning()) {
     motors.setSpinning(true);
-    taskStopSpinorama.enable();
+    taskStopSpinning.enable();
   }
 
-  byte speed = ps2x.Analog(PSS_LY);
-  byte angular = ps2x.Analog(PSS_RX);
+  byte speed = 127;
+  byte angular = ps2x.Analog(PSS_LX);
+
+  if(ps2x.Button(MOVE_FORWARD)) {
+    speed = 255;
+  } else if(ps2x.Button(MOVE_BACKWARD)) {
+    speed = 0;
+  }
 
   motors.setSpeed(speed);
   motors.setAngular(angular);
+
+  motors.write();
 }
 
-
-void handleStopSpinorama() {
+void handleStopSpinning() {
   motors.setSpinning(false);
 }
 
@@ -73,15 +82,14 @@ void setup() {
   // Configure the scheduler
   scheduler.init();
   scheduler.addTask(taskReadGamepad);
-  scheduler.enableAll();
-
+  // scheduler.enableAll();
+  taskReadGamepad.enable();
 
   ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT,
                       PS2_PRESSURES, PS2_RUMBLE);
 
   /*Set-up d'un servo*/
   servo_test.attach(servo_pin_SF);
-
 }
 
 void loop() {

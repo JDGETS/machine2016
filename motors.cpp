@@ -18,6 +18,10 @@ void Motors::setSpinning(bool enabled) {
   _spinning = enabled;
 }
 
+const bool &Motors::spinning() const {
+  return _spinning;
+}
+
 void Motors::write() {
   if(_spinning) {
     _left.setSpeed(255);
