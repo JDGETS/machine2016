@@ -49,7 +49,7 @@ void handleReadGamepad() {
     servo_test.write(180);
   }
 
-  if(ps2x.ButtonPressed(SPINNING_BUTTON) && !motors.spinning()) {
+  if(false && ps2x.ButtonPressed(SPINNING_BUTTON) && !motors.spinning()) {
     motors.setSpinning(true);
     taskStopSpinning.enable();
   }
