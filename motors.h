@@ -1,10 +1,10 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-#define MOTOR_L_FORWARD_PIN 4
-#define MOTOR_L_BACKWARD_PIN 5
-#define MOTOR_R_FORWARD_PIN 2
-#define MOTOR_R_BACKWARD_PIN 3
+#define MOTOR_L_FORWARD_PIN 5
+#define MOTOR_L_BACKWARD_PIN 4
+#define MOTOR_R_FORWARD_PIN 3
+#define MOTOR_R_BACKWARD_PIN 2
 
 #include "motor.h"
 
