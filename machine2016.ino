@@ -14,6 +14,8 @@
 #define servo_pin_SF 13
 /******************/
 
+#define 5VOLT            6
+
 // Controls
 #define SPINNING_BUTTON PSB_CROSS
 #define MOVE_FORWARD PSB_R2
@@ -77,6 +79,8 @@ void handleStopSpinning() {
 }
 
 void setup() {
+  pinMode(5VOLT, OUTPUT);
+  digitalWrite(5VOLT, HIGH);
   Serial.begin(115200);
 
   // Wait a bit for the controller to connect
