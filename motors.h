@@ -12,7 +12,8 @@ class Motors
 {
 public:
   Motors();
-
+  Motor _left;
+  Motor _right;
   void setSpeed(char speed);
   const char &speed() const;
 
@@ -25,8 +26,8 @@ public:
   void write();
 
 private:
-  Motor _left;
-  Motor _right;
+
+  char _currentSpeed;
   char _speed;
   char _angular;
   bool _spinning;
