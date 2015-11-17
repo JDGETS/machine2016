@@ -31,24 +31,31 @@ const bool &Motors::spinning() const {
 }
 
 void Motors::write() {
+
+  _currentSpeed = 0;
   if(_spinning) {
-    _left.setSpeed(255);
+    _left.setSpeed(255); //Was 255
+    
     _right.setSpeed(0);
   } else {
     // full left: -127
     // full right: 127
 
+    Serial.print((int)_angular);
     if(_speed == 0) {
-      _left.setSpeed(_angular);
-      _right.setSpeed(constrain(-_angular, -127, 127));
+      _left.setSpeed();
+      _right.setSpeed(constrain(-_angular, -127, 127)); 
       // ^ constrain to prevent wrapping from 128 to -127
     } else {
-
       if(_speed > 0) {
         if(_angular < 0) {
           _left.setSpeed(_speed + _angular);
           _right.setSpeed(_speed);
         } else {
+
+          //Go Forward
+          //Serial.print("Front\n");
+          
           _left.setSpeed(_speed);
           _right.setSpeed(_speed - _angular);
         }
@@ -57,6 +64,9 @@ void Motors::write() {
           _left.setSpeed(_speed - _angular);
           _right.setSpeed(_speed);
         } else {
+
+          //Go Backward
+          //Serial.print("Back\n");
           _left.setSpeed(_speed);
           _right.setSpeed(_speed + _angular);
         }

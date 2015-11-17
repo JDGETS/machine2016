@@ -131,6 +131,7 @@ boolean PS2X::read_gamepad(boolean motor1, byte motor2) {
          read_delay++;   // see if this helps out...
    }
 
+
 #ifdef PS2X_COM_DEBUG
    Serial.println("OUT:IN");
    for(int i=0; i<9; i++){

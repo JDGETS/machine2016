@@ -26,12 +26,17 @@
 #define PS2_PRESSURES  false
 #define PS2_RUMBLE     false
 
+void handleReadGamepad();
+void handleStopSpinning();
+
 PS2X ps2x;
 Scheduler scheduler;
 Motors motors;
 
 Servo servo_test;
 bool flip_done = false;
+int expendingSpeed = 0;
+int expendingRatio;
 
 Task taskReadGamepad(30, -1, &handleReadGamepad);
 Task taskStopSpinning(300, 1, &handleStopSpinning);
@@ -60,12 +65,73 @@ void handleReadGamepad() {
   byte x = ps2x.Analog(PSS_LX);
   byte y = ps2x.Analog(PSS_LY);
 
+  
+  char maxSpeed;
+  expendingRatio = 1;
+
+  //FORWARD
   if(ps2x.Button(MOVE_FORWARD)) {
-    speed = 127;
-  } else if(ps2x.Button(MOVE_BACKWARD)) {
-    speed = -127;
+
+    //Determine if boost is activated
+    if(ps2x.Button(PSB_L2)){
+      maxSpeed = 127;
+      expendingSpeed = 127;  
+    }else{
+      maxSpeed = 90;
+    }
+    
+    //Go faster if the key is pressed continually
+    if(expendingSpeed > 0 && expendingSpeed <= maxSpeed){
+      //Set max speed to maxSpeed
+      if(expendingSpeed >= maxSpeed - expendingRatio){
+        expendingSpeed = maxSpeed;
+      }else{
+        expendingSpeed += expendingRatio;
+      }
+    }else{
+      expendingSpeed = 60;
+    }
+  } 
+  //BACKWARD
+  else if(ps2x.Button(MOVE_BACKWARD)) {
+
+    //Determine if boost is activated
+    if(ps2x.Button(PSB_L2)){
+      maxSpeed = -127;
+      expendingSpeed = -127;   
+    }else{
+      maxSpeed = -90;
+    }
+    
+    //Go faster if the key is pressed continually
+    if(expendingSpeed < 0 && expendingSpeed >= maxSpeed){
+      //Set max speed to maxSpeed
+      if(expendingSpeed <= maxSpeed + expendingRatio){
+        expendingSpeed = maxSpeed;
+      }else{
+        expendingSpeed -= expendingRatio;
+      }
+    }else{
+      expendingSpeed = -65;
+    }
+  }else{
+    //No Boost, return to normal speed
+    if(ps2x.Button(PSB_L2)){
+      if(expendingSpeed > 0)
+        expendingSpeed = 90;
+      else if(expendingSpeed < 0){
+        expendingSpeed = -90;
+      }
+    }else{
+      expendingSpeed = 0;
+    }
+      
+    
   }
 
+  if(expendingSpeed != 0)
+    Serial.println((int)expendingSpeed);
+  speed = expendingSpeed;
   motors.setSpeed(speed);
   motors.setAngular(angular - 128);
 
