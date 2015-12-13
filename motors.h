@@ -6,6 +6,11 @@
 #define MOTOR_R_FORWARD_PIN 3
 #define MOTOR_R_BACKWARD_PIN 2
 
+#define MAX_SPEED 127
+#define NORMAL_SPEED 90
+#define ROTATION_RATIO 0.3
+#define DAMP 5.0
+
 #include "motor.h"
 
 class Motors
@@ -14,6 +19,10 @@ public:
   Motors();
   Motor _left;
   Motor _right;
+
+  void setTargetSpeed(char speed);
+  const char &targetSpeed() const;
+  
   void setSpeed(char speed);
   const char &speed() const;
 
@@ -23,14 +32,20 @@ public:
   void setSpinning(bool enabled);
   const bool &spinning() const;
 
+  void setBoost(const bool &boost);
+  const bool &boost() const;
+
+  void setDirection(char direction);
+
   void write();
 
 private:
-
-  char _currentSpeed;
+  char _direction;
+  char _targetSpeed;
   char _speed;
   char _angular;
   bool _spinning;
+  bool _boost;
 };
 
 #endif

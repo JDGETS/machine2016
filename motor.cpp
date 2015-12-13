@@ -19,7 +19,7 @@ void Motor::write() {
     forward_val = _speed * 2;
   }
 
-  analogWrite(_pin_forward, forward_val);//forward_val
+  analogWrite(_pin_forward, forward_val);
   analogWrite(_pin_backward, backward_val);
 }
 

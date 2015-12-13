@@ -18,6 +18,7 @@
 #define SPINNING_BUTTON PSB_CROSS
 #define MOVE_FORWARD PSB_R2
 #define MOVE_BACKWARD PSB_R1
+#define ACTIVATE_BOOST PSB_L2
 
 #define PS2_DAT        6
 #define PS2_CMD        7
@@ -69,6 +70,7 @@ void handleReadGamepad() {
   char maxSpeed;
   expendingRatio = 1;
 
+  /*
   //FORWARD
   if(ps2x.Button(MOVE_FORWARD)) {
 
@@ -125,14 +127,21 @@ void handleReadGamepad() {
     }else{
       expendingSpeed = 0;
     }
-      
+  }
+  */
+
+  //if(expendingSpeed != 0)
+  //  Serial.println((int)expendingSpeed);
     
+  if(ps2x.Button(MOVE_FORWARD)) {
+    motors.setDirection(1);
+  } else if(ps2x.Button(MOVE_BACKWARD)) {
+    motors.setDirection(-1);
+  } else {
+    motors.setDirection(0);
   }
 
-  if(expendingSpeed != 0)
-    Serial.println((int)expendingSpeed);
-  speed = expendingSpeed;
-  motors.setSpeed(speed);
+  motors.setBoost(ps2x.Button(ACTIVATE_BOOST));
   motors.setAngular(angular - 128);
 
   motors.write();
@@ -151,7 +160,7 @@ void setup() {
   // Configure the scheduler
   scheduler.init();
   scheduler.addTask(taskReadGamepad);
-  // scheduler.enableAll();
+  
   taskReadGamepad.enable();
 
   ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT,

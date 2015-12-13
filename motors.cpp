@@ -3,7 +3,14 @@
 Motors::Motors()
   : _left(MOTOR_L_FORWARD_PIN, MOTOR_L_BACKWARD_PIN),
     _right(MOTOR_R_FORWARD_PIN, MOTOR_R_BACKWARD_PIN) {
+}
 
+void Motors::setTargetSpeed(char speed) {
+  _targetSpeed = speed;
+}
+
+const char &Motors::targetSpeed() const {
+  return _targetSpeed;
 }
 
 void Motors::setSpeed(char speed) {
@@ -30,48 +37,57 @@ const bool &Motors::spinning() const {
   return _spinning;
 }
 
-void Motors::write() {
+void Motors::setBoost(const bool &boost) {
+  _boost = boost;
+}
 
-  _currentSpeed = 0;
-  if(_spinning) {
-    _left.setSpeed(255); //Was 255
-    
-    _right.setSpeed(0);
+const bool &Motors::boost() const {
+  return _boost;
+}
+
+void Motors::setDirection(char direction) {
+  if(_boost) {
+    _targetSpeed = direction * MAX_SPEED;
+    _speed = _targetSpeed;
   } else {
-    // full left: -127
-    // full right: 127
+    _targetSpeed = direction * NORMAL_SPEED;
+  }
 
-    Serial.print((int)_angular);
-    if(_speed == 0) {
-      _left.setSpeed();
-      _right.setSpeed(constrain(-_angular, -127, 127)); 
-      // ^ constrain to prevent wrapping from 128 to -127
+  if(direction == 0) {
+    _targetSpeed = 0;
+    _speed = 0;
+  } else {
+    if(-direction == _direction) {
+      _speed = _targetSpeed;
+    }
+  }
+
+  _direction = direction;
+}
+
+void Motors::write() {
+  // [-127, 127] -> [0, 127] -> [1, ROTATION_RATIO]
+  float ratio = 1 - abs(_angular) / 127.0 * (1 - ROTATION_RATIO);
+
+  // _speed = _speed + (_targetSpeed - _speed) / DAMP;
+  if(_speed != _targetSpeed) {
+    _speed += _direction * 2;
+  }
+
+  if(_speed == 0) {
+    // In-place rotation
+
+    _left.setSpeed(_angular);
+    _right.setSpeed(-_angular); 
+  } else {
+    // Regular movements
+    
+    if(_angular < 0) {
+      _left.setSpeed(_speed * ratio);
+      _right.setSpeed(_speed);
     } else {
-      if(_speed > 0) {
-        if(_angular < 0) {
-          _left.setSpeed(_speed + _angular);
-          _right.setSpeed(_speed);
-        } else {
-
-          //Go Forward
-          //Serial.print("Front\n");
-          
-          _left.setSpeed(_speed);
-          _right.setSpeed(_speed - _angular);
-        }
-      } else {
-        if(_angular < 0) {
-          _left.setSpeed(_speed - _angular);
-          _right.setSpeed(_speed);
-        } else {
-
-          //Go Backward
-          //Serial.print("Back\n");
-          _left.setSpeed(_speed);
-          _right.setSpeed(_speed + _angular);
-        }
-      }
-
+      _left.setSpeed(_speed);
+      _right.setSpeed(_speed * ratio);
     }
   }
 
@@ -80,6 +96,8 @@ void Motors::write() {
   Serial.print(_left.speed(), DEC);
   Serial.print(" right: ");
   Serial.print(_right.speed(), DEC);
+  Serial.print(" ");
+  Serial.print(_direction, DEC);
   Serial.print("\n");
 #endif
 
