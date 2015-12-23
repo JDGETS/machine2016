@@ -1,17 +1,24 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-#define MOTOR_L_FORWARD_PIN 5
-#define MOTOR_L_BACKWARD_PIN 4
-#define MOTOR_R_FORWARD_PIN 3
-#define MOTOR_R_BACKWARD_PIN 2
+#define MOTOR_L_FORWARD_PIN 13
+#define MOTOR_L_BACKWARD_PIN 12
+#define MOTOR_R_FORWARD_PIN 11
+#define MOTOR_R_BACKWARD_PIN 10
 
 #define MAX_SPEED 127
 #define NORMAL_SPEED 90
 #define ROTATION_RATIO 0.3
-#define DAMP 5.0
+#define ACCELERATION_FACTOR 10
+
+// #define DEBUG
 
 #include "motor.h"
+
+template <typename type>
+type sign(type value) {
+  return type((value>0) - (value<0));
+}
 
 class Motors
 {
@@ -22,7 +29,7 @@ public:
 
   void setTargetSpeed(char speed);
   const char &targetSpeed() const;
-  
+
   void setSpeed(char speed);
   const char &speed() const;
 

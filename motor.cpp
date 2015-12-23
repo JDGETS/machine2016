@@ -26,3 +26,4 @@ void Motor::write() {
 const char &Motor::speed() const {
   return _speed;
 }
+

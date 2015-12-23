@@ -69,16 +69,26 @@ void Motors::write() {
   // [-127, 127] -> [0, 127] -> [1, ROTATION_RATIO]
   float ratio = 1 - abs(_angular) / 127.0 * (1 - ROTATION_RATIO);
 
-  // _speed = _speed + (_targetSpeed - _speed) / DAMP;
-  if(_speed != _targetSpeed) {
-    _speed += _direction * 2;
+  if(abs(_speed) < abs(_targetSpeed)) {
+    _speed += _direction * ACCELERATION_FACTOR;
+  } else {
+    _speed = _targetSpeed;
   }
 
   if(_speed == 0) {
     // In-place rotation
-
-    _left.setSpeed(_angular);
-    _right.setSpeed(-_angular); 
+     char dir = sign(_angular);
+     
+    if(_boost) {
+      _left.setSpeed(dir * MAX_SPEED);
+      _right.setSpeed(-dir * MAX_SPEED);
+    } else {
+      char rotationSpeed = map(abs(_angular), 0, 127, 0, NORMAL_SPEED);
+      
+      _left.setSpeed(dir * rotationSpeed);
+      _right.setSpeed(-dir * rotationSpeed);
+    }
+    
   } else {
     // Regular movements
     
@@ -104,3 +114,4 @@ void Motors::write() {
   _left.write();
   _right.write();
 }
+
