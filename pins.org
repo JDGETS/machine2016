@@ -1,23 +1,26 @@
 * Botboarduino
 
-| Pin        | Description                          |
-|------------+--------------------------------------|
-| 0, 1       | Serial                               |
-| 2, 3       | Moteurs unidirectionnels quelconques |
-| 4, 5       | I2C                                  |
-| 6, 7, 8, 9 | Manette                              |
-| 10         | Moteur droit direction avant         |
-| 11         | Moteur droit direction arrière       |
-| 12         | Moteur gauche direction arrière      |
-| 13         | Moteur gauche direction avant        |
-| A0         | Limit switch du haut du slammer      |
-| A1         | Limit switch du bas du slammer       |
+| Pin        | Description                           |
+|------------+---------------------------------------|
+| 0, 1       | Serial                                |
+| 2, 3       |                                       |
+| 4, 5       | I2C                                   |
+| 6, 7, 8, 9 | Manette                               |
+| 10         | Moteur droit direction arrière (PWM)  |
+| 11         | Moteur gauche direction arriève (PWM) |
+| 12         |                                       |
+| 13         |                                       |
+| A0         | Limit switch du haut du slammer       |
+| A1         | Limit switch du bas du slammer        |
+| A2         | Moteur gauche direction avant         |
+| A3         | Motour droit direction avant          |
 
 * Shield Adafruit
 
 | Pin     | Description |
+|---------+-------------|
 | M1      | Slammer     |
-| M2      |             |
+| M2      | Launcher    |
 | M3      |             |
 | M4      |             |
 | Servo 1 |             |
