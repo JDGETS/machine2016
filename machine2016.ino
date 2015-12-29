@@ -32,6 +32,7 @@ Motors motors;
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *slammerMotor = AFMS.getMotor(1);
+Adafruit_DCMotor *launcherMotor = AFMS.getMotor(2);
 
 Slammer slammer(slammerMotor);
 
@@ -45,6 +46,13 @@ void handleReadGamepad() {
   if(false && ps2x.ButtonPressed(SPINNING_BUTTON) && !motors.spinning()) {
     motors.setSpinning(true);
     taskStopSpinning.delay(300);
+  }
+
+  if(ps2x.Button(PSB_TRIANGLE)) {
+    launcherMotor->run(BACKWARD);
+    launcherMotor->setSpeed(60);
+  } else {
+    launcherMotor->run(RELEASE);
   }
   
   slammer.setActivated(ps2x.Button(ACTIVATE_SLAMMER));
@@ -74,6 +82,7 @@ void setup() {
   Serial.begin(115200);
 
   AFMS.begin();
+  slammer.setup();
 
   // Wait a bit for the controller to connect
   delay(300);

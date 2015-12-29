@@ -1,17 +1,15 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-#define MOTOR_L_FORWARD_PIN 13
-#define MOTOR_L_BACKWARD_PIN 12
-#define MOTOR_R_FORWARD_PIN 11
-#define MOTOR_R_BACKWARD_PIN 10
+#define MOTOR_L_FORWARD_PIN A2
+#define MOTOR_L_BACKWARD_PIN 10
+#define MOTOR_R_FORWARD_PIN A3
+#define MOTOR_R_BACKWARD_PIN 11
 
 #define MAX_SPEED 127
 #define NORMAL_SPEED 90
 #define ROTATION_RATIO 0.3
 #define ACCELERATION_FACTOR 10
-
-// #define DEBUG
 
 #include "motor.h"
 
