@@ -15,6 +15,7 @@
 #define MOVE_BACKWARD PSB_R1
 #define ACTIVATE_BOOST PSB_L2
 #define ACTIVATE_SLAMMER PSB_L1
+#define ACTIVATE_LAUNCHER PSB_TRIANGLE
 
 #define PS2_DAT        6
 #define PS2_CMD        7
@@ -48,16 +49,20 @@ void handleReadGamepad() {
     taskStopSpinning.delay(300);
   }
 
-  if(ps2x.Button(PSB_TRIANGLE)) {
+  // Launcher
+  if(ps2x.Button(ACTIVATE_LAUNCHER)) {
     launcherMotor->run(BACKWARD);
     launcherMotor->setSpeed(60);
   } else {
     launcherMotor->run(RELEASE);
   }
-  
+
+  // Slammer
   slammer.setActivated(ps2x.Button(ACTIVATE_SLAMMER));
   slammer.run();
 
+
+  // Motors
   byte angular = ps2x.Analog(PSS_LX);
 
   if(ps2x.Button(MOVE_FORWARD)) {
@@ -82,6 +87,7 @@ void setup() {
   Serial.begin(115200);
 
   AFMS.begin();
+
   slammer.setup();
 
   // Wait a bit for the controller to connect
