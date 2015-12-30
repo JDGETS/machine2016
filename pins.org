@@ -17,11 +17,11 @@
 
 * Shield Adafruit
 
-| Pin     | Description |
-|---------+-------------|
-| M1      | Slammer     |
-| M2      | Launcher    |
-| M3      |             |
-| M4      |             |
-| Servo 1 |             |
-| Servo 2 |             |
+| Pin     | Description          |
+|---------+----------------------|
+| M1      | Slammer              |
+| M2      | Launcher             |
+| M3      | Frodon/Sam protector |
+| M4      | Vest wrapper         |
+| Servo 1 |                      |
+| Servo 2 |                      |
