@@ -3,7 +3,7 @@
 
 #define SLAMMER_SLAMMING_SPEED 30
 #define SLAMMER_RETRACTING_SPEED 30
-#define SLAMMER_COOLDOWN 30
+#define SLAMMER_COOLDOWN 10
 #define DOWN_SWITCH A0
 #define UP_SWITCH A1
 
@@ -48,9 +48,11 @@ public:
       _up_flag = true;
     }
 
-    if(_cooldown == 0) {
+    if(_cooldown > 0) {
+      _cooldown--;
+    } else {
       if(_activated && !_down_flag) {
-        if(_ticks >= 30) {
+        if(_ticks >= 60) {
           _down_flag = true;
         } else {
           slam();
@@ -60,7 +62,7 @@ public:
       }
 
       if(!_activated && !_up_flag) {
-        if(_ticks >= 30) {
+        if(_ticks >= 60) {
           _up_flag = true;
         } else {
           retract();
@@ -68,10 +70,6 @@ public:
           _down_flag = false;
         }
       }
-    }
-
-    if(_cooldown > 0) {
-      _cooldown--;
     }
 
     if(!moving) {
@@ -82,12 +80,12 @@ public:
   }
 
   void slam() {
-    _motor->run(BACKWARD);
+    _motor->run(FORWARD);
     _motor->setSpeed(SLAMMER_SLAMMING_SPEED);
   }
 
   void retract() {
-    _motor->run(FORWARD);
+    _motor->run(BACKWARD);
     _motor->setSpeed(SLAMMER_RETRACTING_SPEED);
   }
 
