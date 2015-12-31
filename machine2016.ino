@@ -20,12 +20,12 @@
 #define UNWRAP_VEST PSB_PAD_DOWN
 #define TOGGLE_RING_MOTOR PSB_SQUARE
 
-#define RING_MOTOR_PIN 3
+#define RING_MOTOR_PIN A2
 
 #define PS2_DAT        6
 #define PS2_CMD        7
 #define PS2_SEL        8
-#define PS2_CLK        9
+#define PS2_CLK        2
 #define PS2_PRESSURES  false
 #define PS2_RUMBLE     false
 

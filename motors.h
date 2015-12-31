@@ -1,10 +1,10 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-#define MOTOR_L_FORWARD_PIN 10
-#define MOTOR_L_BACKWARD_PIN A3
-#define MOTOR_R_FORWARD_PIN 11
-#define MOTOR_R_BACKWARD_PIN A2
+#define MOTOR_L_FORWARD_PIN 11
+#define MOTOR_L_BACKWARD_PIN 3
+#define MOTOR_R_FORWARD_PIN 10
+#define MOTOR_R_BACKWARD_PIN 9
 
 #define NORMAL_SPEED 120
 #define PRECISE_SPEED 50
@@ -12,8 +12,6 @@
 #define ACCELERATION_FACTOR 10
 
 #include "motor.h"
-
-#define DEBUG
 
 template <typename type>
 type sign(type value) {
@@ -49,6 +47,7 @@ public:
 private:
   char _direction;
   char _targetSpeed;
+  char _acceleration;
   char _speed;
   char _angular;
   bool _spinning;
