@@ -1,17 +1,19 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-#define MOTOR_L_FORWARD_PIN A2
-#define MOTOR_L_BACKWARD_PIN 10
-#define MOTOR_R_FORWARD_PIN A3
-#define MOTOR_R_BACKWARD_PIN 11
+#define MOTOR_L_FORWARD_PIN 10
+#define MOTOR_L_BACKWARD_PIN A3
+#define MOTOR_R_FORWARD_PIN 11
+#define MOTOR_R_BACKWARD_PIN A2
 
-#define MAX_SPEED 127
-#define NORMAL_SPEED 90
+#define NORMAL_SPEED 120
+#define PRECISE_SPEED 50
 #define ROTATION_RATIO 0.3
 #define ACCELERATION_FACTOR 10
 
 #include "motor.h"
+
+#define DEBUG
 
 template <typename type>
 type sign(type value) {
@@ -37,8 +39,8 @@ public:
   void setSpinning(bool enabled);
   const bool &spinning() const;
 
-  void setBoost(const bool &boost);
-  const bool &boost() const;
+  void setPrecise(const bool& precise);
+  const bool& precise() const;
 
   void setDirection(char direction);
 
@@ -50,7 +52,7 @@ private:
   char _speed;
   char _angular;
   bool _spinning;
-  bool _boost;
+  bool _precise;
 };
 
 #endif

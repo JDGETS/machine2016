@@ -33,21 +33,9 @@ void Motors::setSpinning(bool enabled) {
   _spinning = enabled;
 }
 
-const bool &Motors::spinning() const {
-  return _spinning;
-}
-
-void Motors::setBoost(const bool &boost) {
-  _boost = boost;
-}
-
-const bool &Motors::boost() const {
-  return _boost;
-}
-
 void Motors::setDirection(char direction) {
-  if(_boost) {
-    _targetSpeed = direction * MAX_SPEED;
+  if(_precise) {
+    _targetSpeed = direction * PRECISE_SPEED;
     _speed = _targetSpeed;
   } else {
     _targetSpeed = direction * NORMAL_SPEED;
@@ -65,6 +53,14 @@ void Motors::setDirection(char direction) {
   _direction = direction;
 }
 
+void Motors::setPrecise(const bool& precise) {
+  _precise = precise;
+}
+
+const bool& Motors::precise() const {
+  return _precise;
+}
+
 void Motors::write() {
   // [-127, 127] -> [0, 127] -> [1, ROTATION_RATIO]
   float ratio = 1 - abs(_angular) / 127.0 * (1 - ROTATION_RATIO);
@@ -79,9 +75,9 @@ void Motors::write() {
     // In-place rotation
      char dir = sign(_angular);
      
-    if(_boost) {
-      _left.setSpeed(dir * MAX_SPEED);
-      _right.setSpeed(-dir * MAX_SPEED);
+    if(_precise) {
+      _left.setSpeed(dir * PRECISE_SPEED);
+      _right.setSpeed(-dir * PRECISE_SPEED);
     } else {
       char rotationSpeed = map(abs(_angular), 0, 127, 0, NORMAL_SPEED);
       
@@ -102,12 +98,14 @@ void Motors::write() {
   }
 
 #ifdef DEBUG
-  Serial.print("left: ");
+  Serial.print("Target speed: ");
+  Serial.print(_targetSpeed, DEC);
+  Serial.print(" Speed: ");
+  Serial.print(_speed, DEC);
+  Serial.print(" left: ");
   Serial.print(_left.speed(), DEC);
   Serial.print(" right: ");
   Serial.print(_right.speed(), DEC);
-  Serial.print(" ");
-  Serial.print(_direction, DEC);
   Serial.print("\n");
 #endif
 
