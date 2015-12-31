@@ -16,6 +16,11 @@
 #define ACTIVATE_BOOST PSB_L2
 #define ACTIVATE_SLAMMER PSB_L1
 #define ACTIVATE_LAUNCHER PSB_TRIANGLE
+#define WRAP_VEST PSB_PAD_UP
+#define UNWRAP_VEST PSB_PAD_DOWN
+#define TOGGLE_RING_MOTOR PSB_SQUARE
+
+#define RING_MOTOR_PIN 3
 
 #define PS2_DAT        6
 #define PS2_CMD        7
@@ -32,21 +37,39 @@ Scheduler scheduler;
 Motors motors;
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *slammerMotor = AFMS.getMotor(1);
-Adafruit_DCMotor *launcherMotor = AFMS.getMotor(2);
+Adafruit_DCMotor *slammerMotor = AFMS.getMotor(2);
+Adafruit_DCMotor *launcherMotor = AFMS.getMotor(1);
+Adafruit_DCMotor *wrapMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *samFrodonMotor = AFMS.getMotor(3);
 
-Slammer slammer(slammerMotor);
+Slammer slammer(slammerMotor, RING_MOTOR_PIN);
 
 Task taskReadGamepad(30, -1, &handleReadGamepad);
 Task taskStopSpinning(300, 0, &handleStopSpinning);
 
+bool slammerState = false;
+byte samFrodonSpeed = 0;
+
+bool wrapperWrapState = false;
+bool wrapperUnwrapState = false;
 
 void handleReadGamepad() {
   ps2x.read_gamepad();
 
-  if(false && ps2x.ButtonPressed(SPINNING_BUTTON) && !motors.spinning()) {
-    motors.setSpinning(true);
-    taskStopSpinning.delay(300);
+  // Ring motor
+  if(ps2x.ButtonPressed(TOGGLE_RING_MOTOR)) {
+    slammer.toggleRingMotor();
+  }
+
+  // Wrapper
+  if(ps2x.ButtonPressed(WRAP_VEST)) {
+    wrapMotor->run(FORWARD);
+    wrapMotor->setSpeed(255);
+  } else if(ps2x.ButtonPressed(UNWRAP_VEST)) {
+    wrapMotor->run(BACKWARD);
+    wrapMotor->setSpeed(255);
+  } else {
+    wrapMotor->run(RELEASE);
   }
 
   // Launcher
@@ -58,9 +81,20 @@ void handleReadGamepad() {
   }
 
   // Slammer
-  slammer.setActivated(ps2x.Button(ACTIVATE_SLAMMER));
+  if(ps2x.ButtonPressed(ACTIVATE_SLAMMER))  {
+    slammerState = !slammerState;
+  }
+
+  slammer.setActivated(slammerState);
   slammer.run();
 
+  // Sam/Frodon motor
+  if(ps2x.ButtonPressed(PSB_CIRCLE)) {
+     samFrodonSpeed++;
+  }
+
+  samFrodonMotor->run(FORWARD);
+  samFrodonMotor->setSpeed((samFrodonSpeed % 2) * 255);
 
   // Motors
   byte angular = ps2x.Analog(PSS_LX);
@@ -73,7 +107,7 @@ void handleReadGamepad() {
     motors.setDirection(0);
   }
 
-  motors.setBoost(ps2x.Button(ACTIVATE_BOOST));
+  motors.setPrecise(ps2x.Button(ACTIVATE_BOOST));
   motors.setAngular(angular - 128);
 
   motors.write();
@@ -86,12 +120,14 @@ void handleStopSpinning() {
 void setup() {
   Serial.begin(115200);
 
+  digitalWrite(RING_MOTOR_PIN, LOW);
+
   AFMS.begin();
 
   slammer.setup();
 
   // Wait a bit for the controller to connect
-  delay(300);
+  delay(500);
 
   // Configure the scheduler
   scheduler.init();
