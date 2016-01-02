@@ -1,10 +1,10 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-#define MOTOR_L_FORWARD_PIN 11
-#define MOTOR_L_BACKWARD_PIN 3
-#define MOTOR_R_FORWARD_PIN 10
-#define MOTOR_R_BACKWARD_PIN 9
+#define MOTOR_L_FORWARD_PIN 3
+#define MOTOR_L_BACKWARD_PIN 11
+#define MOTOR_R_FORWARD_PIN 9
+#define MOTOR_R_BACKWARD_PIN 10
 
 #define NORMAL_SPEED 120
 #define PRECISE_SPEED 50
@@ -22,8 +22,6 @@ class Motors
 {
 public:
   Motors();
-  Motor _left;
-  Motor _right;
 
   void setTargetSpeed(char speed);
   const char &targetSpeed() const;
@@ -45,6 +43,8 @@ public:
   void write();
 
 private:
+  Motor _left;
+  Motor _right;
   char _direction;
   char _targetSpeed;
   char _acceleration;

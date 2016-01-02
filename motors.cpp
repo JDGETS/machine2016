@@ -44,10 +44,6 @@ void Motors::setDirection(char direction) {
   if(direction == 0) {
     _targetSpeed = 0;
     _speed = 0;
-  } else {
-    if(-direction == _direction) {
-      _speed = _targetSpeed;
-    }
   }
 
   _direction = direction;
@@ -74,26 +70,36 @@ void Motors::write() {
   if(_speed == 0) {
     // In-place rotation
      char dir = sign(_angular);
-     
+
     if(_precise) {
       _left.setSpeed(dir * PRECISE_SPEED);
       _right.setSpeed(-dir * PRECISE_SPEED);
     } else {
       char rotationSpeed = map(abs(_angular), 0, 127, 0, NORMAL_SPEED);
-      
+
       _left.setSpeed(dir * rotationSpeed);
       _right.setSpeed(-dir * rotationSpeed);
     }
-    
+
   } else {
     // Regular movements
-    
-    if(_angular < 0) {
-      _left.setSpeed(_speed * ratio);
-      _right.setSpeed(_speed);
+
+    if(_direction == -1) {
+      if(_angular < 0) {
+        _left.setSpeed(_speed);
+        _right.setSpeed(_speed * ratio);
+      } else {
+        _left.setSpeed(_speed * ratio);
+        _right.setSpeed(_speed);
+      }
     } else {
-      _left.setSpeed(_speed);
-      _right.setSpeed(_speed * ratio);
+      if(_angular < 0) {
+        _left.setSpeed(_speed * ratio);
+        _right.setSpeed(_speed);
+      } else {
+        _left.setSpeed(_speed);
+        _right.setSpeed(_speed * ratio);
+      }
     }
   }
 
@@ -112,4 +118,3 @@ void Motors::write() {
   _left.write();
   _right.write();
 }
-
