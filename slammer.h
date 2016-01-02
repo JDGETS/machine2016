@@ -10,9 +10,8 @@
 class Slammer
 {
 public:
-  Slammer(Adafruit_DCMotor *motor, const byte& ring_motor_pin) {
+  Slammer(Adafruit_DCMotor *motor) {
     _motor = motor;
-    _ring_motor_pin = ring_motor_pin;
     _up_flag = false;
     _down_flag = false;
     _ticks = 0;
@@ -73,12 +72,6 @@ public:
       }
     }
 
-    if(_down_flag && _activate_ring_motor) {
-      digitalWrite(_ring_motor_pin, HIGH);
-    } else {
-      digitalWrite(_ring_motor_pin, LOW);
-    }
-
     if(!moving) {
       _motor->run(RELEASE);
     }
@@ -96,19 +89,12 @@ public:
     _motor->setSpeed(SLAMMER_RETRACTING_SPEED);
   }
 
-  void toggleRingMotor() {
-    _activate_ring_motor = !_activate_ring_motor;
-    Serial.println(_activate_ring_motor ? "ON" : "OFF");
-  }
-
 private:
   bool _up_flag;
   bool _down_flag;
   bool _activated;
   int _ticks;
   int _cooldown;
-  byte _ring_motor_pin;
-  bool _activate_ring_motor;
 
   Adafruit_DCMotor *_motor;
 };

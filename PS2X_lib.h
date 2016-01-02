@@ -181,6 +181,7 @@ class PS2X {
     bool enablePressures();
     byte Analog(byte);
     void reconfig_gamepad();
+    boolean ButtonIsDown(uint16_t);
 
   private:
     inline void CLK_SET(void);
