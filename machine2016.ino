@@ -37,7 +37,7 @@ Motors motors;
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *slammerMotor = AFMS.getMotor(2);
 Adafruit_DCMotor *wrapMotor = AFMS.getMotor(3);
-Adafruit_DCMotor *samFrodonMotor = AFMS.getMotor(1);
+Adafruit_DCMotor *samFrodonMotor = AFMS.getMotor(4);
 
 Slammer slammer(slammerMotor);
 
@@ -62,9 +62,12 @@ void handleReadGamepad() {
   }
 
   // Slammer
+  slammerState = ps2x.ButtonIsDown(ACTIVATE_SLAMMER);
+  /*
   if(ps2x.ButtonPressed(ACTIVATE_SLAMMER))  {
     slammerState = !slammerState;
   }
+  */
 
   slammer.setActivated(slammerState);
   slammer.run();
