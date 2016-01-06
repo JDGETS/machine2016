@@ -8,6 +8,7 @@
 #include "utility/Adafruit_PWMServoDriver.h"
 
 #include "slammer.h"
+#include "lube.h"
 
 // Controls
 #define SPINNING_BUTTON PSB_CROSS
@@ -19,6 +20,8 @@
 #define WRAP_VEST PSB_PAD_UP
 #define UNWRAP_VEST PSB_PAD_DOWN
 #define TOGGLE_RING_MOTOR PSB_SQUARE
+#define ACTIVATE_LUBE PSB_CROSS
+#define RESET_LUBE PSB_PAD_LEFT
 
 #define PS2_DAT        6
 #define PS2_CMD        7
@@ -35,11 +38,13 @@ Scheduler scheduler;
 Motors motors;
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+Adafruit_DCMotor *lubeMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *slammerMotor = AFMS.getMotor(2);
 Adafruit_DCMotor *wrapMotor = AFMS.getMotor(3);
 Adafruit_DCMotor *samFrodonMotor = AFMS.getMotor(4);
 
 Slammer slammer(slammerMotor);
+Lube lube(lubeMotor);
 
 Task taskReadGamepad(30, -1, &handleReadGamepad);
 Task taskStopSpinning(300, 0, &handleStopSpinning);
@@ -59,6 +64,18 @@ void handleReadGamepad() {
     wrapMotor->setSpeed(127);
   } else {
     wrapMotor->run(RELEASE);
+  }
+
+  // Lube
+  bool activateLube = ps2x.ButtonIsDown(ACTIVATE_LUBE);
+  bool resetLube = ps2x.ButtonIsDown(RESET_LUBE);
+
+  if(resetLube) {
+    lube.reset();
+  } else if(activateLube) {
+    lube.spray();
+  } else {
+    lube.stop();
   }
 
   // Slammer
