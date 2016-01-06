@@ -2,7 +2,7 @@
 #define SLAMMER_H
 
 #define SLAMMER_SLAMMING_SPEED 100
-#define SLAMMER_RETRACTING_SPEED 30
+#define SLAMMER_RETRACTING_SPEED 60
 #define SLAMMER_COOLDOWN 10
 #define DOWN_SWITCH A1
 #define UP_SWITCH A0
@@ -80,12 +80,12 @@ public:
   }
 
   void slam() {
-    _motor->run(BACKWARD);
+    _motor->run(FORWARD);
     _motor->setSpeed(SLAMMER_SLAMMING_SPEED);
   }
 
   void retract() {
-    _motor->run(FORWARD);
+    _motor->run(BACKWARD);
     _motor->setSpeed(SLAMMER_RETRACTING_SPEED);
   }
 
