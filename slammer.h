@@ -52,7 +52,7 @@ public:
       _cooldown--;
     } else {
       if(_activated && !_down_flag) {
-        if(_ticks >= 60) {
+        if(_ticks >= 6000000) {
           _down_flag = true;
         } else {
           slam();
@@ -62,7 +62,7 @@ public:
       }
 
       if(!_activated && !_up_flag) {
-        if(_ticks >= 60) {
+        if(_ticks >= 600000) {
           _up_flag = true;
         } else {
           retract();
